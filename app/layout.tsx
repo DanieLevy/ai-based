@@ -15,26 +15,31 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <nav className="bg-gray-800 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <span className="text-xl font-bold">AI-Based</span>
-                </div>
-                <div className="hidden md:block">
-                  <div className="ml-10 flex items-baseline space-x-4">
-                    <Link href="/" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
-                      Home
-                    </Link>
-                    <Link href="/ai-test" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
-                      AI Testing Platform
-                    </Link>
-                    <Link href="/integrations-test" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
-                      Integrations Test
-                    </Link>
-                  </div>
-                </div>
+        <nav className="bg-gray-800 p-4">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between">
+            <div className="flex items-center flex-shrink-0 text-white mr-6">
+              <span className="font-semibold text-xl tracking-tight">AI Dashboard</span>
+            </div>
+            <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+              <div className="text-sm lg:flex-grow">
+                <Link href="/" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Home
+                </Link>
+                <Link href="/chat-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Chat Test
+                </Link>
+                <Link href="/vision-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Vision Test
+                </Link>
+                <Link href="/integrations-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Integrations Test
+                </Link>
+                <Link href="/knowledge-search" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Knowledge Search
+                </Link>
+                <Link href="/enhanced-knowledge-search" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Enhanced Search
+                </Link>
               </div>
             </div>
           </div>
