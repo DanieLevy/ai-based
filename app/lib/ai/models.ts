@@ -226,4 +226,25 @@ export function getModelsByCostTier(tier: string): AIModel[] {
 // Filter models by provider
 export function getModelsByProvider(provider: string): AIModel[] {
   return AVAILABLE_MODELS.filter(model => model.provider === provider);
+}
+
+// Get models that support vision (images)
+export const VISION_CAPABLE_MODELS = [
+  "us.anthropic.claude-3-opus-20240229-v1:0",
+  "us.anthropic.claude-3-sonnet-20240229-v1:0",
+  "us.anthropic.claude-3-5-sonnet-20240620-v1:0",
+  "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+  "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+  "us.anthropic.claude-sonnet-4-20250514-v1:0",
+  "us.anthropic.claude-opus-4-20250514-v1:0"
+];
+
+// Check if a model supports vision/image input
+export function isVisionCapableModel(modelId: string): boolean {
+  return VISION_CAPABLE_MODELS.includes(modelId);
+}
+
+// Get all vision-capable models
+export function getVisionCapableModels(): AIModel[] {
+  return AVAILABLE_MODELS.filter(model => VISION_CAPABLE_MODELS.includes(model.id));
 } 

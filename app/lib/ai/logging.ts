@@ -82,7 +82,26 @@ export function error(message: string, data?: any, modelId?: string, requestId?:
 
 // Log API request
 export function logApiRequest(modelId: string, requestId: string, prompt: any): void {
-  info(`API Request: ${requestId}`, { prompt }, modelId, requestId);
+  const shortRequestId = requestId.substring(0, 8);
+  const modelName = modelId.split('-')[0];
+  
+  // For chat messages, extract just the content
+  let messagePreview = '';
+  if (prompt.messages && Array.isArray(prompt.messages)) {
+    const userMessages = prompt.messages.filter((m: any) => m.role === 'user');
+    if (userMessages.length > 0) {
+      const content = userMessages[0].content;
+      messagePreview = content.length > 60 
+        ? content.substring(0, 60) + '...' 
+        : content;
+    }
+  }
+  
+  info(`📤 Request [${modelName}] #${shortRequestId} • ${messagePreview}`, 
+    { prompt }, 
+    modelId, 
+    requestId
+  );
 }
 
 // Log API response
@@ -96,11 +115,26 @@ export function logApiResponse(
   outputTokenCount?: number
 ): void {
   const duration = endTime - startTime;
+  const shortRequestId = requestId.substring(0, 8);
+  const modelName = modelId.split('-')[0];
+  
+  // Format response data in a readable way
+  let contentPreview = '';
+  if (response.choices && response.choices.length > 0 && response.choices[0].message) {
+    const content = response.choices[0].message.content;
+    contentPreview = content.length > 60 
+      ? content.substring(0, 60) + '...' 
+      : content;
+  }
+  
+  const tokenInfo = inputTokenCount && outputTokenCount 
+    ? `${inputTokenCount}➡️${outputTokenCount} tokens`
+    : 'tokens unknown';
   
   info(
-    `API Response: ${requestId}`, 
+    `📥 Response [${modelName}] #${shortRequestId} • ${duration}ms • ${tokenInfo} • "${contentPreview}"`, 
     { 
-      response, 
+      model: modelId,
       duration: `${duration}ms`,
       inputTokens: inputTokenCount,
       outputTokens: outputTokenCount
@@ -132,11 +166,16 @@ export function logApiResponse(
 export function logApiError(modelId: string, requestId: string, error: any, startTime: number): void {
   const endTime = Date.now();
   const duration = endTime - startTime;
+  const shortRequestId = requestId.substring(0, 8);
+  const modelName = modelId.split('-')[0];
   
   const errorMessage = error instanceof Error ? error.message : String(error);
+  const shortError = errorMessage.length > 100 
+    ? errorMessage.substring(0, 100) + '...' 
+    : errorMessage;
   
   this.error(
-    `API Error: ${requestId}`, 
+    `❌ Error [${modelName}] #${shortRequestId} • ${duration}ms • ${shortError}`, 
     { error: errorMessage, stack: error.stack, duration: `${duration}ms` }, 
     modelId, 
     requestId,

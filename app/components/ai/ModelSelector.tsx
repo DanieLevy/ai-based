@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AIModel } from '@/app/lib/ai/models';
+import { AIModel, VISION_CAPABLE_MODELS } from '@/app/lib/ai/models';
 
 interface ModelSelectorProps {
   onModelSelect: (modelId: string) => void;
@@ -9,6 +9,7 @@ interface ModelSelectorProps {
   filterByCapability?: string;
   filterByProvider?: string;
   filterByCostTier?: string;
+  visionOnly?: boolean;
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export default function ModelSelector({
   filterByCapability,
   filterByProvider,
   filterByCostTier,
+  visionOnly = false,
   className = ''
 }: ModelSelectorProps) {
   const [models, setModels] = useState<AIModel[]>([]);
@@ -47,7 +49,15 @@ export default function ModelSelector({
           
           // Auto-select the first model if none is selected
           if (!selectedModel && modelsList.length > 0) {
-            onModelSelect(modelsList[0].id);
+            // If vision only, select first vision-capable model
+            if (visionOnly) {
+              const visionModels = modelsList.filter(m => VISION_CAPABLE_MODELS.includes(m.id));
+              if (visionModels.length > 0) {
+                onModelSelect(visionModels[0].id);
+              }
+            } else {
+              onModelSelect(modelsList[0].id);
+            }
           }
           
           setIsInitialized(true);
@@ -61,11 +71,25 @@ export default function ModelSelector({
       
       fetchModels();
     }
-  }, [isInitialized, onModelSelect, selectedModel]);
+  }, [isInitialized, onModelSelect, selectedModel, visionOnly]);
+
+  // If the visionOnly flag changes, we need to make sure a valid model is selected
+  useEffect(() => {
+    if (selectedModel && visionOnly && !VISION_CAPABLE_MODELS.includes(selectedModel)) {
+      const visionModels = models.filter(m => VISION_CAPABLE_MODELS.includes(m.id));
+      if (visionModels.length > 0) {
+        onModelSelect(visionModels[0].id);
+      }
+    }
+  }, [visionOnly, selectedModel, models, onModelSelect]);
 
   // Filter models based on props
   const filteredModels = models.filter(model => {
     let include = true;
+    
+    if (visionOnly) {
+      include = include && VISION_CAPABLE_MODELS.includes(model.id);
+    }
     
     if (filterByCapability && model.capabilities) {
       include = include && model.capabilities.includes(filterByCapability);
@@ -95,7 +119,10 @@ export default function ModelSelector({
 
   return (
     <div className={`${className} p-4 rounded-md border border-gray-300`}>
-      <h2 className="text-xl font-semibold mb-4">Select AI Model</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Select AI Model 
+        {visionOnly && <span className="text-blue-600 text-sm ml-2">(Vision-capable only)</span>}
+      </h2>
       
       {loading ? (
         <div className="flex items-center justify-center p-4">
@@ -123,12 +150,20 @@ export default function ModelSelector({
                       ${selectedModel === model.id 
                         ? 'bg-blue-100 border border-blue-300' 
                         : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'}
+                      ${visionOnly && VISION_CAPABLE_MODELS.includes(model.id) ? 'border-blue-200' : ''}
                     `}
                     onClick={() => onModelSelect(model.id)}
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="font-medium">{model.name}</div>
+                        <div className="font-medium">
+                          {model.name}
+                          {VISION_CAPABLE_MODELS.includes(model.id) && (
+                            <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                              Vision
+                            </span>
+                          )}
+                        </div>
                         <div className="text-sm text-gray-500">{model.id}</div>
                       </div>
                       {model.costSavings && (

@@ -30,6 +30,9 @@ export default function RootLayout({
                     <Link href="/ai-test" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
                       AI Testing Platform
                     </Link>
+                    <Link href="/integrations-test" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                      Integrations Test
+                    </Link>
                   </div>
                 </div>
               </div>
