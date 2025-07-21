@@ -1,50 +1,56 @@
-import Image from "next/image";
-import Link from "next/link";
-import ApiTest from "./components/ApiTest";
+import { HeroHighlight, Highlight } from "./components/ui/hero-highlight";
+import { FeatureCard } from "./components/ui/feature-card";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
+    <div className="flex flex-col items-center">
+      <HeroHighlight containerClassName="h-[85vh] max-h-[800px]">
+        <div className="flex flex-col items-center text-center px-6 md:px-10">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium text-gray-900 dark:text-white mb-6">
+            AI-Based <Highlight>System</Highlight>
+          </h1>
+          
+          <p className="max-w-2xl text-lg md:text-xl text-gray-600 dark:text-gray-300 font-light mb-10">
+            A Next.js application with advanced AI integration capabilities, 
+            designed to <Highlight className="dark:from-blue-500 dark:to-indigo-500 from-blue-300 to-indigo-300">connect with knowledge sources</Highlight> and provide intelligent responses.
+          </p>
+          
+          <div className="grid gap-8 grid-cols-1 lg:grid-cols-2 w-full max-w-6xl mt-12">
+            <FeatureCard 
+              title="AI Integration"
+              description="Connect to multiple AI models with an elegant interface for natural language processing and intelligent responses."
+            />
+            
+            <FeatureCard 
+              title="Knowledge Search"
+              description="Access information across your knowledge base with intelligent semantic search powered by advanced AI models."
+            />
+          </div>
+        </div>
+      </HeroHighlight>
 
-        <h1 className="text-3xl font-bold text-center">Sofia AI Integration</h1>
+      <section className="w-full max-w-7xl mx-auto py-20 px-6">
+        <h2 className="text-3xl md:text-4xl font-medium text-center mb-12 text-gray-900 dark:text-white">
+          Features & <Highlight>Capabilities</Highlight>
+        </h2>
         
-        <p className="text-center max-w-md">
-          This application demonstrates integration with Sofia AI's
-          OpenAI-compatible API using different models for various tasks.
-        </p>
-        
-        <div className="w-full max-w-xl">
-          <ApiTest />
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <FeatureCard 
+            title="Confluence Integration"
+            description="Seamlessly connect with Confluence to search and retrieve knowledge across your organization's wiki."
+          />
+          
+          <FeatureCard 
+            title="Multi-Model Support"
+            description="Choose from a variety of AI models including Claude, OpenAI, Gemini, and more to match your specific needs."
+          />
+          
+          <FeatureCard 
+            title="Semantic Search"
+            description="Go beyond keyword matching with AI-powered semantic search that understands context and meaning."
+          />
         </div>
-        
-        <div className="mt-6">
-          <Link 
-            href="/ai-test" 
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Open Full Testing Platform
-          </Link>
-        </div>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row mt-8">
-          <Link 
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="/api/ai/models"
-            target="_blank"
-          >
-            View Available Models
-          </Link>
-        </div>
-      </main>
+      </section>
     </div>
   );
 }

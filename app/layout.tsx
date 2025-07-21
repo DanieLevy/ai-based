@@ -1,10 +1,21 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Link from 'next/link';
+import { ThemeProvider } from "./lib/theme-provider";
+import { intelOneDisplay } from "./lib/fonts";
+import { HeaderWithNav } from "./components/header-with-nav";
 
 export const metadata: Metadata = {
   title: "AI-Based System",
-  description: "A Next.js application with Sofia AI integration",
+  description: "A Next.js application with AI integration",
+  icons: {
+    icon: "/images/ME-logo-stacked-black.svg",
+    shortcut: "/images/ME-logo-stacked-black.svg",
+    apple: "/images/ME-logo-stacked-black.svg",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/images/ME-logo-stacked-black.svg",
+    },
+  }
 };
 
 export default function RootLayout({
@@ -13,42 +24,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <nav className="bg-gray-800 p-4">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between">
-            <div className="flex items-center flex-shrink-0 text-white mr-6">
-              <span className="font-semibold text-xl tracking-tight">AI Dashboard</span>
+    <html lang="en" suppressHydrationWarning className={intelOneDisplay.variable}>
+      <body className={`${intelOneDisplay.className} min-h-screen flex flex-col bg-white dark:bg-gray-900`}>
+        <ThemeProvider>
+          <HeaderWithNav />
+          
+          <main className="flex-grow bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            {children}
+          </main>
+          
+          <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+            <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+              <p className="text-center text-sm text-gray-500">
+                &copy; {new Date().getFullYear()} Mobileye. All rights reserved.
+              </p>
             </div>
-            <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-              <div className="text-sm lg:flex-grow">
-                <Link href="/" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Home
-                </Link>
-                <Link href="/chat-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Chat Test
-                </Link>
-                <Link href="/vision-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Vision Test
-                </Link>
-                <Link href="/integrations-test" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Integrations Test
-                </Link>
-                <Link href="/knowledge-search" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Knowledge Search
-                </Link>
-                <Link href="/enhanced-knowledge-search" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Enhanced Search
-                </Link>
-                <Link href="/enhanced-search-with-loader" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
-                  Search with Loader
-                </Link>
-              </div>
-            </div>
-          </div>
-        </nav>
-        
-        <main>{children}</main>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );

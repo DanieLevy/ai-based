@@ -10,25 +10,24 @@
   },
   "dependencies": {
     "@tabler/icons-react": "^3.34.1",
-    "@tailwindcss/cli": "^4.1.11",
     "clsx": "^2.1.1",
     "motion": "^12.23.6",
     "next": "15.4.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-icons": "^5.5.0",
     "tailwind-merge": "^3.3.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11",
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.5",
     "typescript": "^5"
   }
 }
