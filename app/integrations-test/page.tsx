@@ -39,11 +39,20 @@ export default function IntegrationsTestPage() {
           
           <div>
             <h3 className="text-lg font-medium mb-2">Confluence Configuration</h3>
-            <ul className="list-disc pl-5">
+            <ul className="list-disc pl-5 mb-3">
               <li><code className="bg-gray-100 px-1 rounded">CONFLUENCE_BASE_URL</code> - Base URL of your Confluence instance</li>
               <li><code className="bg-gray-100 px-1 rounded">CONFLUENCE_USERNAME</code> - Your Confluence username</li>
               <li><code className="bg-gray-100 px-1 rounded">CONFLUENCE_API_TOKEN</code> - Your Confluence API token</li>
             </ul>
+            <div className="bg-blue-50 p-3 rounded border border-blue-200 text-blue-800 text-sm">
+              <h4 className="font-medium">Confluence Token Tips:</h4>
+              <ul className="list-disc pl-5">
+                <li>Generate a Personal Access Token (PAT) from: <code>https://confluence.mobileye.com/plugins/personalaccesstokens/usertokens.action</code></li>
+                <li>Ensure the token has the following permissions: <code>read:confluence-content.all</code></li>
+                <li>Copy the token string directly into the <code>CONFLUENCE_API_TOKEN</code> environment variable</li>
+                <li>For Confluence, the token is used with Bearer authentication (not Basic auth)</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
