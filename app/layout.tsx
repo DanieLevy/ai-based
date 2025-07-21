@@ -40,6 +40,9 @@ export default function RootLayout({
                 <Link href="/enhanced-knowledge-search" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
                   Enhanced Search
                 </Link>
+                <Link href="/enhanced-search-with-loader" className="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4">
+                  Search with Loader
+                </Link>
               </div>
             </div>
           </div>
