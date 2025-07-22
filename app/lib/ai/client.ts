@@ -2,10 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 import * as logger from './logging';
 import { estimateTokenCount } from './costCalculator';
 import { getModelById } from './models';
+import { getSofiaToken } from './auth';
 
 // Default API configuration
 const DEFAULT_CONFIG = {
-  apiKey: process.env.OPENAI_API_KEY,
   baseUrl: process.env.OPENAI_BASE_URL || 'https://sofia-api.lgw.cloud.mobileye.com/v1/api',
   defaultModel: process.env.MODEL || 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
   timeout: 60000, // 60 seconds
@@ -53,11 +53,11 @@ export interface CompletionResponse {
  * A client for interacting with OpenAI-compatible Sofia API
  */
 export class SofiaAIClient {
-  private apiKey: string;
   private baseUrl: string;
   private defaultModel: string;
   private timeout: number;
   private maxRetries: number;
+  private apiKey?: string;
 
   /**
    * Create a new Sofia AI client
@@ -65,21 +65,28 @@ export class SofiaAIClient {
    * @param config Configuration options for the client
    */
   constructor(config: {
-    apiKey?: string;
     baseUrl?: string;
     defaultModel?: string;
     timeout?: number;
     maxRetries?: number;
+    apiKey?: string;
   } = {}) {
-    this.apiKey = config.apiKey || DEFAULT_CONFIG.apiKey || '';
     this.baseUrl = config.baseUrl || DEFAULT_CONFIG.baseUrl;
     this.defaultModel = config.defaultModel || DEFAULT_CONFIG.defaultModel;
     this.timeout = config.timeout || DEFAULT_CONFIG.timeout;
     this.maxRetries = config.maxRetries || DEFAULT_CONFIG.maxRetries;
+    this.apiKey = config.apiKey;
     
-    if (!this.apiKey) {
-      logger.warn('No API key provided. API calls will fail unless a key is provided at request time.');
+    if (!this.baseUrl) {
+      logger.warn('No base URL provided. API calls will fail unless a base URL is provided at request time.');
     }
+  }
+
+  /**
+   * Get authentication token - either from provided apiKey or from getSofiaToken()
+   */
+  private async getAuthToken(): Promise<string> {
+    return this.apiKey || await getSofiaToken();
   }
 
   /**
@@ -99,7 +106,7 @@ export class SofiaAIClient {
         const response = await fetch(`${this.baseUrl}/models`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'Authorization': `Bearer ${await this.getAuthToken()}`,
             'Content-Type': 'application/json'
           }
         });
@@ -172,11 +179,14 @@ export class SofiaAIClient {
       // Retry logic
       while (retries <= this.maxRetries) {
         try {
+          // Get a fresh token for each attempt
+          const apiKey = await this.getAuthToken();
+          
           // Make the API request
           response = await fetch(`${this.baseUrl}/chat/completions`, {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${this.apiKey}`,
+              'Authorization': `Bearer ${apiKey}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),

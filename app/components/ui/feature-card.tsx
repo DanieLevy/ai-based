@@ -96,39 +96,61 @@ const Skeleton = () => {
  
       <div className="h-40 w-px absolute top-20 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent animate-move">
         <div className="w-10 h-32 top-1/2 -translate-y-1/2 absolute -left-10">
-          <Sparkles />
+          <ClientSparkles />
         </div>
       </div>
     </div>
   );
 };
 
+// Client-only wrapper for Sparkles to avoid hydration mismatch
+const ClientSparkles = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  if (!isMounted) {
+    return <div className="absolute inset-0"></div>; // Empty placeholder during SSR
+  }
+  
+  return <Sparkles />;
+};
+
+// Keep the Sparkles component as internal implementation
 const Sparkles = () => {
-  const randomMove = () => Math.random() * 2 - 1;
-  const randomOpacity = () => Math.random();
-  const random = () => Math.random();
+  // Generate fixed positions for stars during client-side render
+  const starPositions = React.useMemo(() => {
+    return Array(12).fill(0).map(() => ({
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      duration: Math.random() * 2 + 4
+    }));
+  }, []);
+  
   return (
     <div className="absolute inset-0">
-      {[...Array(12)].map((_, i) => (
+      {starPositions.map((pos, i) => (
         <motion.span
           key={`star-${i}`}
           animate={{
-            top: `calc(${random() * 100}% + ${randomMove()}px)`,
-            left: `calc(${random() * 100}% + ${randomMove()}px)`,
-            opacity: randomOpacity(),
+            top: `calc(${Math.random() * 100}% + ${Math.random() * 2 - 1}px)`,
+            left: `calc(${Math.random() * 100}% + ${Math.random() * 2 - 1}px)`,
+            opacity: Math.random(),
             scale: [1, 1.2, 0],
           }}
           transition={{
-            duration: random() * 2 + 4,
+            duration: pos.duration,
             repeat: Infinity,
             ease: "linear",
           }}
           style={{
             position: "absolute",
-            top: `${random() * 100}%`,
-            left: `${random() * 100}%`,
-            width: `2px`,
-            height: `2px`,
+            top: `${pos.top}%`,
+            left: `${pos.left}%`,
+            width: "2px",
+            height: "2px",
             borderRadius: "50%",
             zIndex: 1,
           }}

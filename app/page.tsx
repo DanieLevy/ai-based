@@ -33,22 +33,32 @@ export default function Home() {
         <h2 className="text-3xl md:text-4xl font-medium text-center mb-12 text-gray-900 dark:text-white">
           Features & <Highlight>Capabilities</Highlight>
         </h2>
-        
         <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <FeatureCard 
-            title="Confluence Integration"
-            description="Seamlessly connect with Confluence to search and retrieve knowledge across your organization's wiki."
-          />
-          
-          <FeatureCard 
-            title="Multi-Model Support"
-            description="Choose from a variety of AI models including Claude, OpenAI, Gemini, and more to match your specific needs."
-          />
-          
-          <FeatureCard 
-            title="Semantic Search"
-            description="Go beyond keyword matching with AI-powered semantic search that understands context and meaning."
-          />
+          {/* Not feautre card method but other nice cards */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-4">
+              Advanced AI Integration
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Connect to multiple AI models with an elegant interface for natural language processing and intelligent responses.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-4">
+              Knowledge Search
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Access information across your knowledge base with intelligent semantic search powered by advanced AI models.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-4">
+              Semantic Search
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Go beyond keyword matching with AI-powered semantic search that understands context and meaning.
+            </p>
+          </div>
         </div>
       </section>
     </div>

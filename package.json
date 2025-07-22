@@ -6,7 +6,8 @@
     "dev": "powershell -Command \"$env:NODE_TLS_REJECT_UNAUTHORIZED=0; $env:NODE_NO_WARNINGS=1; next dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup-auth": "node scripts/setup.js"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.34.1",

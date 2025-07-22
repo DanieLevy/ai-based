@@ -12,6 +12,7 @@ The system is organized into several key components:
 - **`logging.ts`**: Provides comprehensive logging for API calls, errors, and performance metrics
 - **`costCalculator.ts`**: Utilities for estimating token usage and calculating costs for different models
 - **`client.ts`**: Main API client for making requests to the Sofia API with error handling and retries
+- **`auth.ts`**: Manages dynamic token acquisition and refreshing for API authentication
 
 ### API Endpoints
 
@@ -19,12 +20,56 @@ The system is organized into several key components:
 - **`/api/ai/chat`**: Handles chat completion requests with multiple messages
 - **`/api/ai/completion`**: Handles simple text completion requests
 - **`/api/ai/logs`**: Provides access to system logs and performance metrics
+- **`/api/auth/refresh-token`**: Handles authentication token acquisition and refresh
 
 ### UI Components
 
 - **`ModelSelector`**: Component for browsing and selecting AI models
 - **`ApiTester`**: Testing interface for trying different models and parameters
 - **`LogViewer`**: Interface for viewing logs, metrics, and performance statistics
+- **`TokenTest`**: Interface for testing the token acquisition and API functionality
+
+## Authentication System
+
+The system uses a dynamic token-based authentication approach:
+
+### Token Management
+
+1. **Python Integration**: Uses a Python script (`me_token_manager.py`) to fetch fresh tokens
+2. **Token Expiration**: Tokens expire after 10 minutes to ensure security
+3. **Caching Strategy**: Tokens are cached to minimize refresh calls
+4. **Fallback Mechanisms**: Multiple fallbacks ensure system reliability:
+   - Python script (primary method)
+   - Environment variables
+   - Local storage (client-side only)
+
+### How Authentication Works
+
+1. The `getSofiaToken()` function in `auth.ts` is the primary entry point
+2. It first checks for a valid cached token
+3. If no valid token exists, it requests one from `/api/auth/refresh-token`
+4. The API endpoint executes the Python script to get a fresh token
+5. If the Python script fails, it falls back to environment variables
+
+### Implementation Example
+
+```typescript
+// Client example using token authentication
+import { SofiaAIClient } from '@/app/lib/ai/client';
+
+// The client will automatically handle token acquisition
+const client = new SofiaAIClient();
+
+// Or provide a specific token
+const client = new SofiaAIClient({
+  apiKey: 'your-token-here' // Optional: provide a specific token
+});
+
+// Make authenticated requests
+const response = await client.createChatCompletion([
+  { role: 'user', content: 'Hello!' }
+]);
+```
 
 ## How to Use
 
@@ -124,6 +169,7 @@ async function generateSummary(text: string) {
 3. **Logging**: Use the logging utilities to track API calls, errors, and performance metrics
 4. **Cost Management**: Be mindful of token usage and choose models appropriately
 5. **Retry Logic**: Use retry logic for transient errors, with exponential backoff
+6. **Token Management**: Let the client handle authentication; only override if necessary
 
 ## Testing
 
@@ -134,15 +180,19 @@ The AI Testing Platform at `/ai-test` provides a comprehensive interface for:
 3. Viewing logs and metrics for API calls
 4. Analyzing success rates and response times
 
-This platform is useful for development and debugging, but should not be exposed in production environments.
+For testing the token system specifically, visit `/token-test` to verify:
+1. Token acquisition is working
+2. API calls with the token succeed
+3. Chat completions are functioning correctly
 
 ## Environment Configuration
 
 Configure the system using environment variables:
 
-- `OPENAI_API_KEY`: Your Sofia API key
+- `OPENAI_API_KEY`: Your Sofia API key (fallback when Python script fails)
 - `OPENAI_BASE_URL`: Base URL for the Sofia API (default: https://sofia-api.lgw.cloud.mobileye.com/v1/api)
 - `MODEL`: Default model to use for API calls
+- `NEXT_PUBLIC_APP_URL`: Your application's base URL (for server-side token requests)
 
 ## Support and Maintenance
 
@@ -150,4 +200,5 @@ For questions or issues with the AI integration system:
 
 - Check logs at `/api/ai/logs` for detailed error information
 - Review the model's documentation for specific limitations or requirements
-- Consult with the Sofia API documentation for any API-specific issues 
+- Consult with the Sofia API documentation for any API-specific issues
+- For token-related issues, check the Python script execution logs 
